@@ -149,3 +149,4 @@ C:\Users\Titus163\source\repos\Prueba\obj\Debug\net5.0\Prueba.RazorCoreGenerate.
 C:\Users\Titus163\source\repos\Prueba\obj\Debug\net5.0\Razor\Views\Shared\_ValidationScriptsPartial.cshtml.g.cs
 C:\Users\Titus163\source\repos\Prueba\obj\Debug\net5.0\Prueba.RazorTargetAssemblyInfo.cs
 C:\Users\Titus163\source\repos\Prueba\obj\Debug\net5.0\Prueba.Views.pdb
+C:\Users\Titus163\source\repos\Prueba\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

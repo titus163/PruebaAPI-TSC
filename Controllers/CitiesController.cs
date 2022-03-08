@@ -4,9 +4,11 @@ using Prueba.Pagination;
 using System.Linq;
 using Prueba.Model;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Prueba.Controllers
 {
+    [Authorize]
     [ApiController]
     public class CitiesController : Controller
     {
@@ -91,6 +93,11 @@ namespace Prueba.Controllers
             return _CitiesPaginatedResult;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="CityName"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("api/Cities/{CityName}")]
         public dynamic Get(string CityName)

@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 #nullable disable
-
 namespace Prueba.Model
 {
+    /// <summary>
+    /// Clase State para almacenar 
+    /// </summary>
     public partial class States
     {
         public States()
