@@ -27,7 +27,11 @@ namespace Prueba.Controllers
         /// <param name="SortType">Tipo de orden: ASC (ascendente) / DESC (descendente).</param>
         /// <param name="CurrentPage">Número de página a obtener.</param>
         /// <param name="RecordsPerPage">Número de registros por página.</param>
-        /// <returns></returns>
+        /// <returns>Get all cities as a paginated result</returns>
+        /// <response code="200">OK</response>
+        /// <response code="400">Solicitud incorrecta</response>
+        /// <response code="401">No tiene acceso al recurso. Autenticación requerida.</response>
+        /// <response code="404">No existen datos para mostrar o no tiene permiso de acceso</response>
         [HttpGet]
         [Route("api/Cities")]
         public GenericPaginator<City> Get(string SearchCriteria, string SortField = "Name", string SortType = "ASC", int CurrentPage = 1, int RecordsPerPage = 10)
@@ -94,10 +98,14 @@ namespace Prueba.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Get City Fuiltering by City Name
         /// </summary>
         /// <param name="CityName"></param>
         /// <returns></returns>
+        /// <response code="200">OK</response>
+        /// <response code="400">Solicitud incorrecta</response>
+        /// <response code="401">No tiene acceso al recurso. Autenticación requerida.</response>
+        /// <response code="404">No existen datos para mostrar o no tiene permiso de acceso</response>
         [HttpGet]
         [Route("api/Cities/{CityName}")]
         public dynamic Get(string CityName)
@@ -123,7 +131,12 @@ namespace Prueba.Controllers
         /// Create a new city child of a parent subdivision or state
         /// </summary>
         /// <param name="NewCitie"></param>
-        /// <returns></returns>
+        /// <returns>Ok if method success</returns>
+        /// <response code="201">Record created</response>
+        /// <response code="400">Solicitud incorrecta</response>
+        /// <response code="401">No tiene acceso al recurso. Autenticación requerida.</response>
+        /// <response code="404">No existen datos para mostrar o no tiene permiso de acceso</response>
+        /// <response code="500">Internal Server Error</response>
         [HttpPost]
         [Route("api/AddNewCity")]
         public dynamic AddNewCity([FromBody] City_Item NewCitie)
@@ -142,7 +155,8 @@ namespace Prueba.Controllers
 
                 _context.Cities.Add(_City);
                 _context.SaveChanges();
-                return CreatedAtAction(nameof(City), new { id = NewCitie.CityId }, NewCitie);
+                NewCitie.CityId = _City.CityId;
+                return CreatedAtAction("AddNewCity", NewCitie);
             }
             catch (Exception)
             {
@@ -155,7 +169,11 @@ namespace Prueba.Controllers
         /// Remove a city record by its given name
         /// </summary>
         /// <param name="CityName"></param>
-        /// <returns></returns>
+        /// <returns>Ok if method success</returns>
+        /// <response code="204">OK</response>
+        /// <response code="400">Solicitud incorrecta</response>
+        /// <response code="401">No tiene acceso al recurso. Autenticación requerida.</response>
+        /// <response code="404">No existen datos para mostrar o no tiene permiso de acceso</response>
         [HttpDelete]
         [Route("api/DelCityRecord")]
         public dynamic DelCityRecord(string CityName)

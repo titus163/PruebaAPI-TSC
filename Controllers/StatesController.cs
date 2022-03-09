@@ -4,9 +4,11 @@ using Prueba.Pagination;
 using System.Linq;
 using Prueba.Model;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Prueba.Controllers
 {
+    [Authorize]
     [ApiController]
     public class StatesController : Controller
     {
@@ -25,7 +27,11 @@ namespace Prueba.Controllers
         /// <param name="SortType">Tipo de orden: ASC (ascendente) / DESC (descendente).</param>
         /// <param name="CurrentPage">Número de página a obtener.</param>
         /// <param name="RecordsPerPage">Número de registros por página.</param>
-        /// <returns></returns>
+        /// <returns>Paginated result and filtered</returns>
+        /// <response code="200">OK</response>
+        /// <response code="400">Solicitud incorrecta</response>
+        /// <response code="401">No tiene acceso al recurso. Autenticación requerida.</response>
+        /// <response code="404">No existen datos para mostrar o no tiene permiso de acceso</response>
         [HttpGet]
         [Route("api/States")]
         public GenericPaginator<States> Get(string SearchCriteria, string SortField = "Name", string SortType = "ASC", int CurrentPage = 1, int RecordsPerPage = 10)
@@ -94,7 +100,11 @@ namespace Prueba.Controllers
         /// Get Subdivision by given name
         /// </summary>
         /// <param name="StateName"></param>
-        /// <returns></returns>
+        /// <returns>Citie filtered by name</returns>
+        /// <response code="200">OK</response>
+        /// <response code="400">Solicitud incorrecta</response>
+        /// <response code="401">No tiene acceso al recurso. Autenticación requerida.</response>
+        /// <response code="404">No existen datos para mostrar o no tiene permiso de acceso</response>
         [HttpGet]
         [Route("api/States/{StateName}")]
         public dynamic Get(string StateName)
@@ -120,7 +130,11 @@ namespace Prueba.Controllers
         /// Get al subdivision of a country given name
         /// </summary>
         /// <param name="CountryName"></param>
-        /// <returns></returns>
+        /// <returns>citie filteres by country name</returns>
+        /// <response code="200">OK</response>
+        /// <response code="400">Solicitud incorrecta</response>
+        /// <response code="401">No tiene acceso al recurso. Autenticación requerida.</response>
+        /// <response code="404">No existen datos para mostrar o no tiene permiso de acceso</response>
         [HttpGet]
         [Route("api/GetStatesByCountryName/{CountryName}")]
         public dynamic GetStatesByCountryName(string CountryName)
@@ -148,7 +162,11 @@ namespace Prueba.Controllers
         /// Create a new subdivision binded to parent country
         /// </summary>
         /// <param name="NewState"></param>
-        /// <returns></returns>
+        /// <returns>Ok if method success</returns>
+        /// <response code="201">Record created</response>
+        /// <response code="400">Solicitud incorrecta</response>
+        /// <response code="401">No tiene acceso al recurso. Autenticación requerida.</response>
+        /// <response code="404">No existen datos para mostrar o no tiene permiso de acceso</response>
         [HttpPost]
         [Route("api/AddNewState")]
         public dynamic AddNewState([FromBody] States_Item NewState)
@@ -167,7 +185,8 @@ namespace Prueba.Controllers
 
                 _context.States.Add(_State);
                 _context.SaveChanges();
-                return CreatedAtAction(nameof(States), new { id = NewState.StateId }, NewState);
+                NewState.StateId = _State.StateId;
+                return CreatedAtAction("AddNewState", NewState);
             }
             catch (Exception)
             {
@@ -180,6 +199,10 @@ namespace Prueba.Controllers
         /// </summary>
         /// <param name="StateName"></param>
         /// <returns></returns>
+        /// <response code="204">OK</response>
+        /// <response code="400">Solicitud incorrecta</response>
+        /// <response code="401">No tiene acceso al recurso. Autenticación requerida.</response>
+        /// <response code="404">No existen datos para mostrar o no tiene permiso de acceso</response>
         [HttpDelete]
         [Route("api/DelStateRecord")]
         public dynamic DelStateRecord(string StateName)

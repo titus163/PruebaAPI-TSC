@@ -4,9 +4,11 @@ using System.Linq;
 using Prueba.Model;
 using Prueba.Pagination;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Prueba.Controllers
 {
+    [Authorize]
     [ApiController]
     public class CountriesController : Controller
     {
@@ -25,6 +27,10 @@ namespace Prueba.Controllers
         /// <param name="SortType">Tipo de orden: ASC (ascendente) / DESC (descendente).</param>
         /// <param name="CurrentPage">Número de página a obtener.</param>
         /// <param name="RecordsPerPage">Número de registros por página.</param>
+        /// <response code="200">OK</response>
+        /// <response code="400">Solicitud incorrecta</response>
+        /// <response code="401">No tiene acceso al recurso. Autenticación requerida.</response>
+        /// <response code="404">No existen datos para mostrar o no tiene permiso de acceso</response>
         /// <returns></returns>
         [HttpGet]
         [Route("api/Countries")]
@@ -90,6 +96,15 @@ namespace Prueba.Controllers
             return _CountryPaginatedResult;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="CountryName"></param>
+        /// <returns></returns>
+        /// <response code="200">OK</response>
+        /// <response code="400">Solicitud incorrecta</response>
+        /// <response code="401">No tiene acceso al recurso. Autenticación requerida.</response>
+        /// <response code="404">No existen datos para mostrar o no tiene permiso de acceso</response>
         [HttpGet]
         [Route("api/Countries/{CountryName}")]
         public dynamic Get(string CountryName)
@@ -111,6 +126,15 @@ namespace Prueba.Controllers
             }
         }
 
+        /// <summary>
+        /// Get Country Filtering by ISO2 Code
+        /// </summary>
+        /// <param name="ISO2"></param>
+        /// <returns></returns>
+        /// <response code="200">OK</response>
+        /// <response code="400">Solicitud incorrecta</response>
+        /// <response code="401">No tiene acceso al recurso. Autenticación requerida.</response>
+        /// <response code="404">No existen datos para mostrar o no tiene permiso de acceso</response>
         [HttpGet]
         [Route("api/GetCountryByISO2Code/{ISO2}")]
         public dynamic GetCountryByISO2Code(string ISO2)
@@ -136,7 +160,12 @@ namespace Prueba.Controllers
         /// Create a new country with subdivision and cities
         /// </summary>
         /// <param name="NewCountry"></param>
-        /// <returns></returns>
+        /// <returns>Ok if method success</returns>
+        /// <response code="201">Record created</response>
+        /// <response code="400">Solicitud incorrecta</response>
+        /// <response code="401">No tiene acceso al recurso. Autenticación requerida.</response>
+        /// <response code="404">No existen datos para mostrar o no tiene permiso de acceso</response>
+        /// <response code="500">Internal Server Error</response>
         [HttpPost]
         [Route("api/AddNewCountry")]
         public dynamic AddNewCountry([FromBody] Country_Item NewCountry)
@@ -167,7 +196,8 @@ namespace Prueba.Controllers
 
                 _context.Countries.Add(_Country);
                 _context.SaveChanges();
-                return CreatedAtAction(nameof(Country), new { id = NewCountry.CountryId }, NewCountry);
+                NewCountry.CountryId = _Country.CountryId;
+                return CreatedAtAction("AddNewCountry", NewCountry);
             }
             catch (Exception)
             {
@@ -179,7 +209,11 @@ namespace Prueba.Controllers
         /// Remove a country and all child subregion and child cities
         /// </summary>
         /// <param name="ISO2"></param>
-        /// <returns></returns>
+        /// <returns>Ok if method success</returns>
+        /// <response code="204">OK</response>
+        /// <response code="400">Solicitud incorrecta</response>
+        /// <response code="401">No tiene acceso al recurso. Autenticación requerida.</response>
+        /// <response code="404">No existen datos para mostrar o no tiene permiso de acceso</response>
         [HttpDelete]
         [Route("api/DelCountryRecord")]        
         public dynamic DelCountryRecord(string ISO2)
